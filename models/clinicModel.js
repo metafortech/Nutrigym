@@ -1,0 +1,54 @@
+const mongoose = require("mongoose");
+
+const clinicSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    location: {
+      governorate: {
+        type: String,
+        required: true,
+      },
+      street: {
+        type: String,
+        required: true,
+      },
+    },
+    ratings: {
+      type: Number,
+      min: [1, "min ratings value is 1.0"],
+      max: [5, "max ratings value is 5.0"],
+    },
+    subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    services: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+        isSpecial: { type: Boolean, default: false },
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+const clinicModel = mongoose.model("Clinic", clinicSchema);
+
+module.exports = clinicModel;
