@@ -8,6 +8,9 @@ const generateToken = require("../utils/createToken");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 
 const Factory = require("./handlerFactory");
+const Club = require("../models/clubModel");
+const Clinic = require("../models/clinicModel");
+const Phyclinic = require("../models/phyiscalclinicModel");
 
 const User = require("../models/userModel");
 
@@ -24,7 +27,7 @@ module.exports = {
   //route     GET /api/v1/Users
   //access    private
 
-  getUser: Factory.getOnebyId(User, "User"),
+  getUser: Factory.getOnebyId(User, "User", "subscibtions"),
 
   //@desc     get specific User by id
   //route     GET /api/v1/Users/:id
@@ -35,11 +38,8 @@ module.exports = {
       req.params.id,
       {
         name: req.body.name,
-        slug: req.body.slug,
         email: req.body.email,
-        phone: req.body.phone,
         role: req.body.role,
-        userImg: req.body.userImg,
       },
       {
         new: true,
@@ -130,4 +130,81 @@ module.exports = {
   //@desc    update specific LoggedUserData by id   user_id  (without password , role)
   //route     PUT /api/v1/Users/updateMyData
   //access    private/Protect
+  addManagerToClub: asyncHandler(async (req, res, next) => {
+    const { clubId, managerId } = req.body;
+
+    // Check if the club exists
+    const club = await Club.findById(clubId);
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+
+    // Check if the user exists and has the "manager" role
+    const manager = await User.findById(managerId);
+    if (!manager || manager.role !== "manager") {
+      return res.status(404).json({ message: "Invalid manager" });
+    }
+
+    club.manager = managerId;
+    await club.save();
+
+    res.status(200).json({ message: "Manager added successfully" });
+  }),
+  addManagerToClinic: asyncHandler(async (req, res, next) => {
+    const { clinicId, managerId } = req.body;
+
+    // Check if the clinic exists
+    const clinic = await Clinic.findById(clinicId);
+    if (!clinic) {
+      return res.status(404).json({ message: "Clinic not found" });
+    }
+
+    // Check if the user exists and has the "manager" role
+    const manager = await User.findById(managerId);
+    if (!manager || manager.role !== "manager") {
+      return res.status(404).json({ message: "Invalid manager" });
+    }
+
+    clinic.manager = managerId;
+    await clinic.save();
+
+    res.status(200).json({ message: "Manager added successfully" });
+  }),
+  removeManagerFromClinic: asyncHandler(async (req, res, next) => {
+    const { clinicId, managerId } = req.body;
+
+    // Check if the clinic exists
+    const clinic = await Clinic.findById(clinicId);
+    if (!clinic) {
+      return res.status(404).json({ message: "Clinic not found" });
+    }
+
+    // Check if the user exists and has the "manager" role
+    const manager = await User.findById(managerId);
+    if (!manager || manager.role !== "manager") {
+      return res.status(404).json({ message: "Invalid manager" });
+    }
+
+    clinic.manager = managerId;
+    await clinic.save();
+
+    res.status(200).json({ message: "Manager added successfully" });
+  }),
+  addManagerToPhyclinic: asyncHandler(async (req, res, next) => {
+    const { phyClinicId, managerId } = req.body;
+
+    const phyClinic = await Phyclinic.findById(phyClinicId);
+    if (!phyClinic) {
+      return res.status(404).json({ message: "PhyClinic not found" });
+    }
+
+    const manager = await User.findById(managerId);
+    if (!manager || manager.role !== "manager") {
+      return res.status(404).json({ message: "Invalid manager" });
+    }
+
+    phyClinic.manager = managerId;
+    await phyClinic.save();
+    res.status(200).json({ message: "Manager added successfully" });
+  }),
 };
