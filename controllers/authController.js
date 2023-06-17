@@ -64,7 +64,7 @@ module.exports = {
     /////////////////////////////////////////////////////////////////////
 
     //2-verify token (not change , expired..?)
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, "qawsedrftgyhujikol");
     //console.log(decoded);
     //////////////////////////////////////////////////////////////////////////////////
 
