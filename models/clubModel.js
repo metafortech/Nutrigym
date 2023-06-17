@@ -42,7 +42,6 @@ const clubSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
-        ratings: Number,
         subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
         isSpecial: { type: Boolean, default: false },
       },

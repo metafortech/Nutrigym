@@ -29,6 +29,8 @@ const {
   cancelSubForClinicService,
   cancelSubForPhyClinicService,
   cancelSubForClubOffer,
+  getSubsForClub,
+  subNewMemberforOffer,
 } = require("../controllers/subsController");
 
 /////////////////////////////////
@@ -63,11 +65,13 @@ Router.post(
 Router.post("/club", auth.allowedTo("admin", "user"), createSubForClub);
 Router.get("/", getSubs);
 Router.post("/offers/:offerId", subforOffer);
+Router.post("/offers/:offerId/member/:memberId", subNewMemberforOffer);
 Router.post("/cancelClubSub/:subId", cancelSubForClub);
 Router.post("/cancelClubOfferSub/:offerId", cancelSubForClubOffer);
 
 ///////////////////////////////////////////////////
 Router.get("/mySubs", getMySubs);
 Router.get("/myofferSubs", getmyoffersSub);
+Router.get("/clubSubs/:id", getSubsForClub);
 
 module.exports = Router;

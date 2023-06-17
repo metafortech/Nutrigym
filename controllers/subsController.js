@@ -6,6 +6,8 @@ const PhyClinic = require("../models/phyiscalclinicModel");
 const Factory = require("./handlerFactory");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
+const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/createToken");
 
 /////////////////////////////////////////////////////
 
@@ -381,6 +383,40 @@ module.exports = {
       .status(200)
       .json({ message: "User subscribed to the offer successfully" });
   }),
+  subNewMemberforOffer: asyncHandler(async (req, res, next) => {
+    const { offerId, memberId } = req.params;
+    const offer = await Club.findOne({ "offers._id": offerId });
+    // Check if the offer exists
+    if (!offer) {
+      return res.status(404).json({ message: "Offer not found" });
+    }
+    // Check if the user is already subscribed to the offer
+    if (offer.offers[0].subscribes.includes(memberId)) {
+      return res
+        .status(400)
+        .json({ message: "User already subscribed to this offer" });
+    }
+    // Find the user by id and update the subscibtions field
+    const user = await User.findByIdAndUpdate(
+      memberId,
+      { $push: { subscibtions: offerId } },
+      { new: true }
+    );
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the offer's subscribes field
+    offer.offers[0].subscribes.push(memberId);
+    await offer.save();
+
+    // Send a success response
+    res
+      .status(200)
+      .json({ message: "User subscribed to the offer successfully" });
+  }),
   cancelSubForClubOffer: asyncHandler(async (req, res, next) => {
     const { offerId } = req.params;
     const user = await User.findOne(req.user._id);
@@ -427,6 +463,22 @@ module.exports = {
       .populate("phyclinic", "name");
     res.status(201).json({ data: subs });
   }),
+  //////////////////////////////////////////////////////
+  getSubsForClub: asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const club = await Club.findById(id);
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+
+    // Find the subscribers in the club
+    const subscribers = await Subs.find({ club: id }).populate(
+      "subscriber",
+      "name phone"
+    );
+    return res.status(200).json({ subscribers });
+  }),
+  //////////////////////////////////////////////////////
   getMySubs: asyncHandler(async (req, res, next) => {
     const user = await User.findOne(req.user._id);
     const subs = await Subs.find({ subscriber: user._id })

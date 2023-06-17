@@ -147,6 +147,8 @@ module.exports = {
 
     club.manager = managerId;
     await club.save();
+    manager.clubManage.push(club._id);
+    await manager.save();
 
     res.status(200).json({ message: "Manager added successfully" });
   }),
@@ -167,6 +169,8 @@ module.exports = {
 
     clinic.manager = managerId;
     await clinic.save();
+    manager.clinicManage.push(clinic._id);
+    await manager.save();
 
     res.status(200).json({ message: "Manager added successfully" });
   }),
@@ -205,6 +209,8 @@ module.exports = {
 
     phyClinic.manager = managerId;
     await phyClinic.save();
+    manager.phyClinicManage.push(phyClinic._id);
+    await manager.save();
     res.status(200).json({ message: "Manager added successfully" });
   }),
 };

@@ -40,6 +40,24 @@ const userSchema = new mongoose.Schema(
     feedingSchedule: [
       { type: mongoose.Schema.ObjectId, ref: "FeedingSchedule" },
     ],
+    clubManage: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Club",
+      },
+    ],
+    clinicManage: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Clinic",
+      },
+    ],
+    phyClinicManage: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "phyiscalclinic",
+      },
+    ],
     callories: [
       {
         title: String,

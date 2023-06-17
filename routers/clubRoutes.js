@@ -22,6 +22,9 @@ const {
   deleteOffer,
   updateOffer,
   getOffer,
+  getClubMembers,
+  deleteMember,
+  updateMember,
 } = require("../controllers/clubController");
 
 /////////////////////////////////
@@ -35,6 +38,14 @@ Router.put(
   updateClub
 );
 
+Router.put(
+  "/:clubId/member/:memberId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  updateMember
+);
+
+Router.get("/:clubId/members", getClubMembers);
 Router.delete("/:id", auth.Protect, auth.allowedTo("admin"), deleteClub);
 
 Router.get("/:id", getClub);
@@ -62,8 +73,15 @@ Router.put(
 Router.delete(
   "/deleteOfer/:clubId/offers/:offerId",
   auth.Protect,
-  auth.allowedTo("admin"),
+  auth.allowedTo("admin", "manager"),
   deleteOffer
+);
+
+Router.delete(
+  "/:clubId/members/:userId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteMember
 );
 
 module.exports = Router;

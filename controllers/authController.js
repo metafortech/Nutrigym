@@ -9,7 +9,7 @@ const User = require("../models/userModel");
 
 module.exports = {
   signUp: asyncHandler(async (req, res, next) => {
-    const { name, email, password, role, gender } = req.body;
+    const { name, email, password, role, gender, phone } = req.body;
     const userCheck = await User.findOne({ email });
     if (userCheck) {
       return res.status(401).json({ message: "email already exists" });
@@ -21,6 +21,7 @@ module.exports = {
       password,
       role,
       gender,
+      phone,
     });
 
     //2-generate token
@@ -33,7 +34,10 @@ module.exports = {
     //1-check email and password is in body ==> in validation
     //2- check email is created and password is correct
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+      .populate("clubManage", "name ")
+      .populate("clinicManage", "name ")
+      .populate("phyClinicManage", "name ");
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return next(new ApiErr("email or password is incorrect", 401));
