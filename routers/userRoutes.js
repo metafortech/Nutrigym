@@ -23,6 +23,9 @@ const {
   getLoggedUserData,
   updateLoggedUserPassword,
   updateLoggedUserData,
+  addManagerToClinic,
+  addManagerToClub,
+  addManagerToPhyclinic,
 } = require("../controllers/userController");
 ////////////////////////////////////////////////////////////////////////////////////
 //for all routes under
@@ -42,6 +45,9 @@ Router.put("/updateMyData", updateLoggedUserValidator, updateLoggedUserData);
 //for all routes under
 Router.use(auth.allowedTo("admin", "manager"));
 Router.post("/", createUserValidator, createUser);
+Router.post("/clubManager", addManagerToClub);
+Router.post("/clinicManager", addManagerToClinic);
+Router.post("/phyManager", addManagerToPhyclinic);
 Router.get("/", getUsers);
 
 Router.get("/:id", getUserValidator, getUser);

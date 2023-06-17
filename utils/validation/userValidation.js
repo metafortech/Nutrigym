@@ -11,24 +11,12 @@ exports.createUserValidator = [
     .withMessage("User name is required ")
     .trim()
     .isLength({ min: 3 })
-    .withMessage("too short User name ")
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
-
+    .withMessage("too short User name "),
   check("email")
     .notEmpty()
     .withMessage("Email is required")
     .isEmail()
-    .withMessage("inValid Email")
-    .custom((val) =>
-      User.findOne({ email: val }).then((user) => {
-        if (user) {
-          return Promise.reject(new Error(`email already exist`));
-        }
-      })
-    ),
+    .withMessage("inValid Email"),
 
   check("password")
     .notEmpty()
@@ -49,7 +37,7 @@ exports.createUserValidator = [
 
   check("phone")
     .optional()
-    .isMobilePhone("ar-EG")
+    .isMobilePhone("ar-JO")
     .withMessage("invalid phone number"),
   check("role").optional(),
 
@@ -65,15 +53,10 @@ exports.getUserValidator = [
 
 exports.updateUserValidator = [
   check("id").isMongoId().withMessage("invalid User id format"),
-  body("name")
-    .optional()
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
+  body("name").optional(),
   check("phone")
     .optional()
-    .isMobilePhone("ar-EG")
+    .isMobilePhone("ar-JO")
     .withMessage("invalid phone number"),
   check("role").optional(),
 
@@ -94,15 +77,10 @@ exports.updateUserValidator = [
 ];
 
 exports.updateLoggedUserValidator = [
-  body("name")
-    .optional()
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
+  body("name").optional(),
   check("phone")
     .optional()
-    .isMobilePhone("ar-EG")
+    .isMobilePhone("ar-JO")
     .withMessage("invalid phone number"),
 
   check("email")

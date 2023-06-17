@@ -21,6 +21,7 @@ const clubSchema = new mongoose.Schema(
         required: true,
       },
     },
+    manager: { type: mongoose.Schema.ObjectId, ref: "User" },
     ratings: {
       type: Number,
       min: [1, "min ratings value is 1.0"],
@@ -41,6 +42,7 @@ const clubSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        ratings: Number,
         subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
         isSpecial: { type: Boolean, default: false },
       },

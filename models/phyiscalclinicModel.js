@@ -26,6 +26,7 @@ const phyiscalclinicSchema = new mongoose.Schema(
       min: [1, "min ratings value is 1.0"],
       max: [5, "max ratings value is 5.0"],
     },
+    manager: { type: mongoose.Schema.ObjectId, ref: "User" },
     subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     services: [
       {

@@ -6,12 +6,21 @@ const ApiError = require("../utils/apiError");
 /////////////////////////////////////////////////////
 
 module.exports = {
-  createClub: Factory.createOne(Club),
+  createClub: asyncHandler(async (req, res, next) => {
+    const { name, description, governorate, street } = req.body;
+    const club = new Club({
+      name,
+      description,
+      location: { governorate, street },
+    });
+    await club.save();
+    res.status(200).json({ data: club });
+  }),
   //@desc     create Club
   //route     POST /api/v1/Clubs
   //access    private
 
-  getClubs: Factory.getAll(Club, "Club"),
+  getClubs: Factory.getAll(Club, "Club", "manager", "name email phone"),
   //@desc     get list of Club
   //route     GET /api/v1/Clubs
   //access    public
@@ -24,7 +33,7 @@ module.exports = {
   //@desc    update specific Club by id
   //route     PUT /api/v1/Clubs/:id
   //access    private
-  deleteClub: Factory.deleteOne(Club),
+  deleteClub: Factory.deleteOne(Club, "Club"),
   //@desc    delete specific Club by id
   //route     DELETE /api/v1/Clubs/:id
   //access    private
@@ -32,12 +41,12 @@ module.exports = {
   /////////////////+/////////////////////////////////
   addOffers: asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const { name, description, price } = req.body;
+    const { name, description, price, ratings } = req.body;
     const club = await Club.findById(id);
     if (!club) {
       return res.status(400).json({ message: "club not found" });
     }
-    club.offers.push({ name, description, price });
+    club.offers.push({ name, description, price, ratings });
     await club.save();
     res.status(200).json({ data: club });
   }),

@@ -10,6 +10,10 @@ const User = require("../models/userModel");
 module.exports = {
   signUp: asyncHandler(async (req, res, next) => {
     const { name, email, password, role, gender } = req.body;
+    const userCheck = await User.findOne({ email });
+    if (userCheck) {
+      return res.status(401).json({ message: "email already exists" });
+    }
     //1-create user
     const user = await User.create({
       name,
@@ -18,10 +22,11 @@ module.exports = {
       role,
       gender,
     });
+
     //2-generate token
     const token = generateToken(user._id);
 
-    res.status(201).json({ data: user, token });
+    res.status(201).json({ message: "signed Up", data: user, token });
   }),
 
   login: asyncHandler(async (req, res, next) => {

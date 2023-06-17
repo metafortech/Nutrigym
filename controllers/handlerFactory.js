@@ -50,7 +50,7 @@ exports.createOne = (Model) =>
     res.status(201).json({ data: document });
   });
 
-exports.getAll = (Model, modelName = "") =>
+exports.getAll = (Model, modelName = "", populateOptions, selectPop) =>
   asyncHandler(async (req, res) => {
     let filter = {};
     if (req.filterObject) {
@@ -60,7 +60,11 @@ exports.getAll = (Model, modelName = "") =>
     const count = await Model.countDocuments();
     apiFeatures.filter().sort().fieldChosen().paginate(count).search(modelName);
 
-    const { mongooseQuery, paginationResult } = apiFeatures;
+    let { mongooseQuery, paginationResult } = apiFeatures;
+
+    if (populateOptions) {
+      mongooseQuery = mongooseQuery.populate(populateOptions, selectPop);
+    }
     const document = await mongooseQuery;
 
     res

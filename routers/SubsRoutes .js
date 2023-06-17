@@ -24,6 +24,11 @@ const {
   subforClinicService,
   subforPhyService,
   cancelSubForClub,
+  cancelSubForClinic,
+  cancelSubForPhyClinic,
+  cancelSubForClinicService,
+  cancelSubForPhyClinicService,
+  cancelSubForClubOffer,
 } = require("../controllers/subsController");
 
 /////////////////////////////////
@@ -35,6 +40,8 @@ Router.post("/clinic", auth.allowedTo("admin", "user"), createSubForClinic);
 Router.post("/clinic/services/:serviceId", subforClinicService);
 // Router.get("/mySubs", getMySubs);
 Router.get("/clinic/myofferSubs", getmyClinicServicesSub);
+Router.post("/cancelClinicSub/:subId", cancelSubForClinic);
+Router.post("/cancelClinicServiceSub/:serviceId", cancelSubForClinicService);
 
 ///////////////////////////////////phyclinic//////////////////////////////
 Router.post(
@@ -46,12 +53,18 @@ Router.post(
 Router.post("/phyclinic/services/:serviceId", subforPhyService);
 // Router.get("/mySubs", getMySubs);
 Router.get("/phyclinic/myofferSubs", getmyPhyservicesSub);
+Router.post("/cancelphyClinicSub/:subId", cancelSubForPhyClinic);
+Router.post(
+  "/cancelphyClinicServiceSub/:serviceId",
+  cancelSubForPhyClinicService
+);
 
 /////////////////////club///////////////////////////
 Router.post("/club", auth.allowedTo("admin", "user"), createSubForClub);
 Router.get("/", getSubs);
 Router.post("/offers/:offerId", subforOffer);
 Router.post("/cancelClubSub/:subId", cancelSubForClub);
+Router.post("/cancelClubOfferSub/:offerId", cancelSubForClubOffer);
 
 ///////////////////////////////////////////////////
 Router.get("/mySubs", getMySubs);

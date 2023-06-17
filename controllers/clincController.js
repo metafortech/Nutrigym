@@ -5,12 +5,21 @@ const asyncHandler = require("express-async-handler");
 /////////////////////////////////////////////////////
 
 module.exports = {
-  createClinic: Factory.createOne(Clinic),
+  createClinic: asyncHandler(async (req, res, next) => {
+    const { name, description, governorate, street } = req.body;
+    const clinic = new Clinic({
+      name,
+      description,
+      location: { governorate, street },
+    });
+    await clinic.save();
+    res.status(200).json({ data: clinic });
+  }),
   //@desc     create Clinic
   //route     POST /api/v1/Clinics
   //access    private
 
-  getClinics: Factory.getAll(Clinic, "Clinic"),
+  getClinics: Factory.getAll(Clinic, "Clinic", "manager", "name email phone"),
   //@desc     get list of Clinic
   //route     GET /api/v1/Clinics
   //access    public

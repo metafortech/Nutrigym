@@ -1598,3 +1598,47 @@ app.post ('/checkout', async (req, res) => {
     res.status (400).send (err);
   });
 });
+
+
+const Club = require("../models/clubModel");
+const Clinic = require("../models/clinicModel");
+const Phyclinic = require("../models/phyclinicModel");
+const User = require("../models/userModel");
+
+// Add Offer to Club (Only accessible to club managers)
+const addOfferToClub = async (req, res) => {
+  try {
+    const { clubId, name, description, price } = req.body;
+    const { userId } = req; // Assuming you have userId in the request object
+
+    // Check if the user is a club manager
+    const user = await User.findById(userId);
+    if (!user || user.role !== "manager") {
+      return res.status(403).json({ message: "Access forbidden" });
+    }
+
+    // Check if the user is the manager of the club
+    const club = await Club.findById(clubId);
+    if (!club || club.manager.toString() !== userId) {
+      return res.status(403).json({ message: "Access forbidden" });
+    }
+
+    // Create and add the offer to the club
+    const offer = {
+      name,
+      description,
+      price,
+    };
+    club.offers.push(offer);
+    await club.save();
+
+    res.status(200).json({ message: "Offer added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  addOfferToClub,
+};
