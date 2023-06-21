@@ -64,6 +64,9 @@ const userSchema = new mongoose.Schema(
         callory: Number,
       },
     ],
+    deviceToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
