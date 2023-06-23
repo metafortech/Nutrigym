@@ -33,13 +33,13 @@ module.exports = {
   createProduct: asyncHandler(async (req, res, next) => {
     const { title, price, description, quantity, image } = req.body;
 
-    // const img = `${process.env.URL_BASE}/products/${image}`;
+    const img = `https://whale-app-8clhi.ondigitalocean.app/api/v1/products/${image}`;
     const product = new Product({
       title,
       price,
       description,
       quantity,
-      image,
+      image: img,
     });
     console.log(product);
     // await product.save();
