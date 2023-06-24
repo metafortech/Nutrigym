@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      required: true,
     },
     userImg: String,
     password: {
@@ -66,6 +67,12 @@ const userSchema = new mongoose.Schema(
     deviceToken: {
       type: String,
     },
+    notification: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
   { timestamps: true }
 );
