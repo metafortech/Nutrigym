@@ -9,6 +9,7 @@ const feedingRoute = require("./feedingRoutes");
 const productRoute = require("./productRoutes");
 const cartRoute = require("./cartRoutes");
 const sliderRoute = require("./sliderRoutes");
+const notificationRoute = require("./notificationRoutes");
 
 const Routes = (app) => {
   app.use("/api/v1/users", userRoute);
@@ -22,6 +23,7 @@ const Routes = (app) => {
   app.use("/api/v1/prod", productRoute);
   app.use("/api/v1/cart", cartRoute);
   app.use("/api/v1/slider", sliderRoute);
+  app.use("/api/v1/notification", notificationRoute);
 };
 
 module.exports = Routes;
