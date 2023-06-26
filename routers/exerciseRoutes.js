@@ -23,6 +23,7 @@ const {
   addExerciseForUser,
   markExerciseAsDone,
   markExerciseAsNotDone,
+  uploadImgCloud,
 } = require("../controllers/exerciseController");
 
 /////////////////////////////////
@@ -38,7 +39,7 @@ Router.post(
   auth.Protect,
   auth.allowedTo("admin", "manager"),
   uploadExerciseImage,
-  resizeImage,
+  uploadImgCloud,
   addExerciseForUser
 );
 Router.get("/", getExercises);

@@ -5,6 +5,7 @@ const clubSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -43,6 +44,12 @@ const clubSchema = new mongoose.Schema(
         },
         subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
         isSpecial: { type: Boolean, default: false },
+      },
+    ],
+    clubProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
   },

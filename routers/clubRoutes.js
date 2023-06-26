@@ -30,6 +30,7 @@ const {
 /////////////////////////////////
 //club////////////////////////////
 Router.post("/", auth.Protect, auth.allowedTo("admin", "manager"), createClub);
+
 Router.get("/", getClubs);
 Router.put(
   "/:id",

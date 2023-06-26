@@ -5,7 +5,7 @@ const clinicSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-
+      unique: true,
     },
     description: {
       type: String,
@@ -45,6 +45,12 @@ const clinicSchema = new mongoose.Schema(
         },
         subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
         isSpecial: { type: Boolean, default: false },
+      },
+    ],
+    clinicProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
   },

@@ -42,8 +42,8 @@ async function getDeviceTokenForUser(userId) {
   }
 }
 
-
-const serviceAccount = require("../config/push-notification-key.json"); 
+// Initialize Firebase Admin SDK
+const serviceAccount = require("../config/push-notification-key.json"); // Replace with your service account key file
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -52,6 +52,11 @@ module.exports = {
   createUser: Factory.createOne(User),
   getUsers: Factory.getAll(User),
   getUser: Factory.getOnebyId(User, "User", "subscibtions"),
+  getAdminsAndManagers: asyncHandler(async (req, res, next) => {
+    const user = await User.find({ role: { $in: ["admin", "manager"] } });
+
+    res.status(200).json({ data: user });
+  }),
   updateUser: asyncHandler(async (req, res, next) => {
     const document = await User.findByIdAndUpdate(
       req.params.id,
@@ -199,58 +204,5 @@ module.exports = {
     await manager.save();
 
     res.status(200).json({ message: "Manager added successfully" });
-  }),
-  sendNotificationToAllUsers: asyncHandler(async (req, res, next) => {
-   const SERVER_KEY = "AAAAaBC5ZYg:APA91bHxB0BdbkYQhugxZSM_NksbN2VK2PPLfFY9HcyiywpKYmsVaKU1K9VKSb3cQNxUzL5g8o0hFIFRZ9-nggKP5kL8tN-gCNEqn8iM0jPsE2SASzJj4CSVI2JVro5VdO0m6gJM2t8z"
-    let fcm = new FCM(SERVER_KEY);
-    const { title, body } = req.body;
-    const tokens = await getAllDeviceTokens(); // Implement your logic to fetch device tokens from the database
-    const message = {
-      to: "/topics/" + req.body.topic,
-      notification: {
-        title: title,
-        body: body,
-        sound: "default",
-        click_action: "FCM_PLUGIN_ACTIVITY",
-        icon: "fcm_push_icon",
-      },
-      tokens,
-    };
-    fcm.send(message, (err, response) => {
-      if (err) {
-        next(err);
-      } else {
-        res.json({ message: "Notification sent to all users.", response });
-      }
-    });
-
-  
-  }),
-  sendNotificationToUser: asyncHandler(async (req, res, next) => {
-   const SERVER_KEY = "AAAAaBC5ZYg:APA91bHxB0BdbkYQhugxZSM_NksbN2VK2PPLfFY9HcyiywpKYmsVaKU1K9VKSb3cQNxUzL5g8o0hFIFRZ9-nggKP5kL8tN-gCNEqn8iM0jPsE2SASzJj4CSVI2JVro5VdO0m6gJM2t8z"
-    let fcm = new FCM(SERVER_KEY);
-    const { userId } = req.params;
-    const { title, body } = req.body;
-    const token = await getDeviceTokenForUser(userId);
-    const message = {
-      to: "/topics/" + req.body.topic,
-      notification: {
-        title: title,
-        body: body,
-        sound: "default",
-        click_action: "FCM_PLUGIN_ACTIVITY",
-        icon: "fcm_push_icon",
-      },
-      token,
-    };
-    fcm.send(message, (err, response) => {
-      if (err) {
-        next(err);
-      } else {
-        res.json({ message: "Notification sent to this user.", response });
-      }
-    });
-
- 
   }),
 };

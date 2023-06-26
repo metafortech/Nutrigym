@@ -8,14 +8,13 @@ const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 /////////////////////////////////////////////////////
 
 module.exports = {
-  createFeedingSchedule: asyncHandler(async (req, res, next) => {
-    const { date, meals, userId, calories } = req.body;
+  createFeedingScheduleForUser: asyncHandler(async (req, res, next) => {
+    const { date, userId } = req.body;
 
     // Check if a feeding schedule already exists for the given date and user
     const existingSchedule = await FeedingSchedule.findOne({
       date,
       user: userId,
-      calories,
     });
 
     if (existingSchedule) {
@@ -27,10 +26,10 @@ module.exports = {
     // Create a new feeding schedule
     const feedingSchedule = new FeedingSchedule({
       date,
-      meals,
+      meals: [],
       user: userId,
-      calories,
     });
+    await feedingSchedule.save();
     const user = await User.findByIdAndUpdate(
       userId,
       { $push: { feedingSchedule: feedingSchedule._id } },
@@ -40,9 +39,28 @@ module.exports = {
       return res.status(400).json({ error: "can not find this user" });
     }
 
-    await feedingSchedule.save();
-
     res.status(200).json({ data: feedingSchedule });
+  }),
+  addFeedingScheduleForUser: asyncHandler(async (req, res, next) => {
+    const { schedualId } = req.params;
+    const { calories, mealName, mealDescription, mealCalories } = req.body;
+
+    // Check if a feeding schedule already exists for the given date and user
+    const Schedule = await FeedingSchedule.findById(schedualId);
+
+    if (!Schedule) {
+      return res.status(400).json({ msg: "no Schedule with this id" });
+    }
+
+    // Create a new feeding schedule
+    Schedule.meals.push({
+      name: mealName,
+      description: mealDescription,
+      calories: mealCalories,
+    });
+    await Schedule.save();
+
+    res.status(200).json({ data: Schedule });
   }),
   getFeddinScheduleByDate: asyncHandler(async (req, res, next) => {
     const { date } = req.params;
@@ -72,23 +90,31 @@ module.exports = {
   }),
   updateFeedingScheduleByDate: asyncHandler(async (req, res, next) => {
     const { date } = req.params;
-    const { meals, userId } = req.body;
+    const { mealName, mealDescription, mealCalories, userId } = req.body;
 
     let feedingSchedule = await FeedingSchedule.findOne({
       date,
       user: userId,
     });
-    console.log(feedingSchedule);
+
     if (!feedingSchedule) {
       // Create a new feeding schedule if it doesn't exist for the given date
       feedingSchedule = new FeedingSchedule({
         date,
-        meals,
+        meals: {
+          name: mealName,
+          description: mealDescription,
+          calories: mealCalories,
+        },
         user: userId,
       });
     } else {
       // Update the existing feeding schedule if it already exists for the given date
-      feedingSchedule.meals = meals;
+      feedingSchedule.meals = {
+        name: mealName,
+        description: mealDescription,
+        calories: mealCalories,
+      };
     }
 
     await feedingSchedule.save();

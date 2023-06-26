@@ -1,11 +1,21 @@
+const path = require("path");
 const Club = require("../models/clubModel");
+const Product = require("../models/productModel");
 const Factory = require("./handlerFactory");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const cloudinary = require("../middlewares/uploadImageCloudnary");
 
 /////////////////////////////////////////////////////
 
 module.exports = {
+  uploadExerciseImage: uploadSingleImage("image"),
+  uploadImgCloud: asyncHandler(async (req, res, next) => {
+    const result = await cloudinary.uploader.upload(req.file.path);
+    req.body.image = result.url;
+    next();
+  }),
   createClub: asyncHandler(async (req, res, next) => {
     const { name, description, governorate, street } = req.body;
     const club = new Club({
@@ -20,7 +30,13 @@ module.exports = {
   //route     POST /api/v1/Clubs
   //access    private
 
-  getClubs: Factory.getAll(Club, "Club", "manager", "name email phone"),
+  getClubs: Factory.getAll(
+    Club,
+    "Club",
+    "manager",
+    "name email phone",
+    "clubProducts"
+  ),
   //@desc     get list of Club
   //route     GET /api/v1/Clubs
   //access    public

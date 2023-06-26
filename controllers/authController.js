@@ -26,6 +26,8 @@ module.exports = {
 
     //2-generate token
     const token = generateToken(user._id);
+    user.deviceToken = token;
+    await user.save();
 
     res.status(201).json({ message: "signed Up", data: user, token });
   }),
@@ -44,6 +46,8 @@ module.exports = {
     }
     //3- generate token
     const token = generateToken(user._id);
+    user.deviceToken = token;
+    await user.save();
 
     res.status(201).json({ message: "Logged In", data: user, token });
   }),
@@ -64,7 +68,7 @@ module.exports = {
     /////////////////////////////////////////////////////////////////////
 
     //2-verify token (not change , expired..?)
-    const decoded = jwt.verify(token, "qawsedrftgyhujikol");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     //console.log(decoded);
     //////////////////////////////////////////////////////////////////////////////////
 
@@ -204,6 +208,8 @@ module.exports = {
     await user.save();
     //if every thing is ok generate new token
     const token = generateToken(user._id);
+    user.deviceToken = token;
+    await user.save();
 
     res.status(200).json({ message: "new password set successfully", token });
   }),

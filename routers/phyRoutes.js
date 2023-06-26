@@ -22,6 +22,9 @@ const {
   getService,
   getServices,
   updateService,
+  deleteMember,
+  getClubMembers,
+  updateMember,
 } = require("../controllers/phyClincController");
 
 /////////////////////////////////
@@ -61,6 +64,21 @@ Router.delete(
   auth.Protect,
   auth.allowedTo("admin"),
   deleteService
+);
+Router.put(
+  "/:clinicId/member/:memberId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  updateMember
+);
+
+Router.get("/:clinicId/members", getClubMembers);
+
+Router.delete(
+  "/:clinicId/members/:userId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteMember
 );
 
 module.exports = Router;

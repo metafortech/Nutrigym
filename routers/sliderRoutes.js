@@ -18,7 +18,8 @@ const {
   getSliders,
   resizeImage,
   updateSlider,
-  uploadProdductImage,
+  uploadImgCloud,
+  uploadSliderImage,
 } = require("../controllers/sliderController");
 
 /////////////////////////////////
@@ -27,8 +28,8 @@ Router.post(
   "/",
   auth.Protect,
   auth.allowedTo("admin"),
-  uploadProdductImage,
-  resizeImage,
+  uploadSliderImage,
+  uploadImgCloud,
   createSlider
 );
 Router.get("/", getSliders);

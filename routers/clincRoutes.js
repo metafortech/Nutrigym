@@ -22,6 +22,9 @@ const {
   deleteService,
   updateService,
   getService,
+  deleteMember,
+  getClubMembers,
+  updateMember,
 } = require("../controllers/clincController");
 
 /////////////////////////////////
@@ -61,6 +64,8 @@ Router.put(
   updateService
 );
 
+Router.get("/:clinicId/members", getClubMembers);
+
 Router.delete(
   "/deleteService/:clinicId/services/:serviceId",
   auth.Protect,
@@ -68,4 +73,16 @@ Router.delete(
   deleteService
 );
 
+Router.delete(
+  "/:clinicId/members/:userId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteMember
+);
+Router.put(
+  "/:clinicId/member/:memberId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  updateMember
+);
 module.exports = Router;

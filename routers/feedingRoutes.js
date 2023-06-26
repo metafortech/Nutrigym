@@ -12,13 +12,14 @@ const auth = require("../controllers/authController");
 // } = require("../utils/validation/productValidation");
 
 const {
-  createFeedingSchedule,
   getFeddinScheduleByDate,
   getAllFeddinSchedule,
   updateFeedingScheduleByDate,
   markMealAsCompleted,
   markMealAsNotCompleted,
   deleteFeedingScheduleByDate,
+  addFeedingScheduleForUser,
+  createFeedingScheduleForUser,
 } = require("../controllers/feedingController");
 
 /////////////////////////////////
@@ -27,7 +28,13 @@ Router.post(
   "/",
   auth.Protect,
   auth.allowedTo("admin", "manager"),
-  createFeedingSchedule
+  createFeedingScheduleForUser
+);
+Router.post(
+  "/addForUser/:schedualId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  addFeedingScheduleForUser
 );
 Router.get(
   "/",

@@ -19,6 +19,16 @@ const {
   resizeImage,
   updateProduct,
   uploadProdductImage,
+  uploadImgCloud,
+  addProductsInClub,
+  addProductsInClinic,
+  addProductsInPhyClinic,
+  deleteProductInClub,
+  deleteProductInClinic,
+  deleteProductInPhyClinic,
+  getProductsInClub,
+  getProductsInClinic,
+  getProductsInPhyClinic,
 } = require("../controllers/productController");
 
 /////////////////////////////////
@@ -28,9 +38,69 @@ Router.post(
   auth.Protect,
   auth.allowedTo("admin", "manager"),
   uploadProdductImage,
-  resizeImage,
+  uploadImgCloud,
   createProduct
 );
+//////club products///////
+Router.post(
+  "/ToClub/:clubId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  uploadProdductImage,
+  uploadImgCloud,
+  addProductsInClub
+);
+
+Router.get("/inClub/:clubId", auth.Protect, getProductsInClub);
+
+Router.delete(
+  "/club/:clubId/product/:productId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteProductInClub
+);
+
+////////////////////////////////////////////////
+//////clinic products///////
+Router.post(
+  "/ToClinic/:clinicId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  uploadProdductImage,
+  uploadImgCloud,
+  addProductsInClinic
+);
+
+Router.get("/inClinic/:clinicId", auth.Protect, getProductsInClinic);
+
+Router.delete(
+  "/clinic/:clinicId/product/:productId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteProductInClinic
+);
+
+//////////////////////////////////////
+//////phyclinic products///////
+Router.post(
+  "/ToPhyClinic/:clinicId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  uploadProdductImage,
+  uploadImgCloud,
+  addProductsInPhyClinic
+);
+
+Router.get("/inPhyClinic/:clinicId", auth.Protect, getProductsInPhyClinic);
+
+Router.delete(
+  "/PhyClinic/:clinicId/product/:productId",
+  auth.Protect,
+  auth.allowedTo("admin", "manager"),
+  deleteProductInPhyClinic
+);
+
+/////////////////////////////////////////////
 Router.get("/", getProducts);
 Router.put(
   "/:id",

@@ -1,3 +1,4 @@
+const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const Exercise = require("../models/exercisesModel");
@@ -6,19 +7,22 @@ const Factory = require("./handlerFactory");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const cloudinary = require("../middlewares/uploadImageCloudnary");
 
 /////////////////////////////////////////////////////
 
 module.exports = {
   uploadExerciseImage: uploadSingleImage("image"),
+  uploadImgCloud: asyncHandler(async (req, res, next) => {
+    const result = await cloudinary.uploader.upload(req.file.path);
+    req.body.image = result.url;
+    next();
+  }),
 
   resizeImage: asyncHandler(async (req, res, next) => {
     const filename = `exercises-${uuidv4()}-${Date.now()}.gif`;
     if (req.file) {
-      await sharp(req.file.buffer)
-        .toFormat("gif")
-        .gif({ quality: 90 })
-        .toFile(`uploads/Exercises/${filename}`);
+      await sharp(req.file.buffer).toFormat("gif").gif();
       //save image to our dataBase
       req.body.image = filename;
     }
@@ -61,12 +65,12 @@ module.exports = {
     if (!exercise) {
       return res.status(400).json({ msg: "no exercise with this id" });
     }
-    const img = `${process.env.URL_BASE}/exercises/${image}`;
+    // const img = `${process.env.URL_BASE}/exercises/${image}`;
     exercise.exercises.push({
       name,
       description,
       calories,
-      image: img,
+      image,
       reps,
       sets,
     });

@@ -26,8 +26,7 @@ const {
   addManagerToClinic,
   addManagerToClub,
   addManagerToPhyclinic,
-  sendNotificationToAllUsers,
-  sendNotificationToUser,
+  getAdminsAndManagers,
 } = require("../controllers/userController");
 ////////////////////////////////////////////////////////////////////////////////////
 //for all routes under
@@ -51,6 +50,7 @@ Router.post("/clubManager", addManagerToClub);
 Router.post("/clinicManager", addManagerToClinic);
 Router.post("/phyManager", addManagerToPhyclinic);
 Router.get("/", getUsers);
+Router.get("/adminsAndManagers", getAdminsAndManagers);
 
 Router.get("/:id", getUserValidator, getUser);
 
@@ -60,9 +60,6 @@ Router.put(
   updateUserValidator,
   updateUser
 );
-//notifications
-Router.post("/sendNotificationToAll", sendNotificationToAllUsers);
-Router.post("/sendNotificationToUser/:userId", sendNotificationToUser);
 
 Router.put("/changePassword/:id", changePasswordValidator, updateUserPassword);
 Router.delete("/:id", deleteUserValidator, deleteUser);

@@ -5,12 +5,17 @@ const Factory = require("./handlerFactory");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+const cloudinary = require("../middlewares/uploadImageCloudnary");
 
 /////////////////////////////////////////////////////
 
 module.exports = {
-  uploadProdductImage: uploadSingleImage("image"),
-
+  uploadSliderImage: uploadSingleImage("image"),
+  uploadImgCloud: asyncHandler(async (req, res, next) => {
+    const result = await cloudinary.uploader.upload(req.file.path);
+    req.body.image = result.url;
+    next();
+  }),
   resizeImage: asyncHandler(async (req, res, next) => {
     const filename = `slider-${uuidv4()}-${Date.now()}.jpeg`;
     if (req.file) {

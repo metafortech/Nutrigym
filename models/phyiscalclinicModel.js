@@ -5,7 +5,7 @@ const phyiscalclinicSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-
+      unique: true,
     },
     description: {
       type: String,
@@ -44,6 +44,12 @@ const phyiscalclinicSchema = new mongoose.Schema(
         },
         subscribes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
         isSpecial: { type: Boolean, default: false },
+      },
+    ],
+    phyProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
   },

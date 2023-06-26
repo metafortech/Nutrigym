@@ -30,7 +30,19 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: [true, "product image cover is required"],
+      required: [true, "product image  is required"],
+    },
+    club: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Club",
+    },
+    clinic: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Clinic",
+    },
+    phyclinic: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "phyiscalclinic",
     },
   },
   {
